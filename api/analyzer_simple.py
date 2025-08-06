@@ -130,6 +130,9 @@ def extract_conditions(task: str, df: pd.DataFrame) -> List[tuple]:
                     val *= 1e9
                 elif unit == 'million':
                     val *= 1e6
+                else:
+                    # Default to billion if no unit specified
+                    val *= 1e9
             else:
                 # Handle crore values (1 crore = 10 million)
                 if 'crore' in task.lower():
@@ -147,6 +150,17 @@ def apply_conditions(df: pd.DataFrame, conditions: List[tuple]) -> pd.DataFrame:
     for col, val, op in conditions:
         if col not in df.columns:
             continue
+        
+        # Ensure numeric comparison for gross column
+        if col.lower() in ['gross', 'worldwide_gross']:
+            # Convert string values to numeric, handling currency formatting
+            df_copy = df.copy()
+            df_copy[col] = pd.to_numeric(
+                df_copy[col].astype(str).str.replace('$', '').str.replace(',', '').str.replace('T', ''), 
+                errors='coerce'
+            )
+            df = df_copy
+        
         if op == ">=":
             df = df[df[col] >= val]
         elif op == "<":
@@ -237,7 +251,15 @@ def analyze_task_simple(task: str) -> List[str]:
                     threshold = 1.5e9  # Default threshold
                 
                 print(f"DEBUG: Using threshold: {threshold}")
-                filtered_df = df[df[col_gross] > threshold]
+                
+                # Convert gross to numeric for comparison
+                df_copy = df.copy()
+                df_copy[col_gross] = pd.to_numeric(
+                    df_copy[col_gross].astype(str).str.replace('$', '').str.replace(',', '').str.replace('T', ''), 
+                    errors='coerce'
+                )
+                
+                filtered_df = df_copy[df_copy[col_gross] > threshold]
                 print(f"DEBUG: Filtered df shape: {filtered_df.shape}")
                 
                 if not filtered_df.empty:

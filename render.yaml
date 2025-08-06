@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: data-analyst-agent-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    healthCheckPath: /docs
+    autoDeploy: true 

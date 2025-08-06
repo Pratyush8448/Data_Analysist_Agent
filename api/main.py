@@ -34,7 +34,7 @@ app = FastAPI(
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to specific domains in production
+    allow_origins=["*"],  # Allow all origins for Render deployment
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
