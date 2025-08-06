@@ -1,0 +1,9 @@
+Scrape the list of highest grossing films from Wikipedia. It is at the URL:
+https://en.wikipedia.org/wiki/List_of_highest-grossing_films
+
+Answer the following questions and respond with a JSON array of strings containing the answer.
+
+1. How many $1 bn movies were released before 2015?
+2. Which is the earliest film to gross over $1.5 bn?
+3. What is the correlation between rank and gross revenue?
+4. Show a scatter plot of rank vs worldwide gross revenue.
