@@ -185,3 +185,30 @@ async def analyze_json(request: QuestionRequest):
 @app.get("/")
 def health_check():
     return {"message": "✅ Data Analyst Agent API is live and running!"}
+
+# Test LLM endpoint
+@app.get("/test-llm/")
+async def test_llm():
+    """Test if LLM integration is working"""
+    try:
+        from api.llm_client import llm_client
+        
+        if llm_client.is_available():
+            response = await llm_client.analyze_data("What is 2+2?")
+            return {
+                "status": "success",
+                "llm_available": True,
+                "response": response
+            }
+        else:
+            return {
+                "status": "llm_not_configured",
+                "llm_available": False,
+                "message": "AI_PROXY_API_KEY and AI_PROXY_BASE_URL not set"
+            }
+    except Exception as e:
+        return {
+            "status": "error",
+            "llm_available": False,
+            "error": str(e)
+        }
